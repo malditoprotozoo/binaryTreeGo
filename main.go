@@ -135,4 +135,6 @@ func main() {
 		tree.Insert(keys[i], datas[i])
 	}
 	display(tree.Root, 0)
+	Remove(tree.Root, 7)
+	display(tree.Root, 0)
 }
