@@ -2,29 +2,62 @@ package main
 
 import "fmt"
 
+// Node : create a type node
+type Node struct {
+	Key   int
+	Data  string
+	Left  *Node
+	Right *Node
+}
+
 // Tree : Create a new tree, starting from the Root, which is a type Node
 type Tree struct {
 	Root *Node
 }
 
-// Node : create a type node
-type Node struct {
-	Key   int
-	Left  *Node
-	Right *Node
-}
-
 // InsertRoot : If there's no root on the tree, this function adds one
-func (tree *Tree) InsertRoot(key int) {
-	tree.Root.Key = key
+func (tree *Tree) InsertRoot(key int, data string) {
+	tree.Root = &Node{
+		Key:  key,
+		Data: data,
+	}
 	return
 }
 
-// InsertNode : Insert a new node on the tree
-func (tree *Tree) InsertNode(key int) {
+// Insert : Inserts a new node on the tree, if there's already a Root, it calls InserNode
+func (tree *Tree) Insert(key int, data string) {
 	if tree.Root == nil {
-
+		tree.InsertRoot(key, data)
+		return
 	}
+	tree.Root.InsertNode(key, data)
+}
+
+// InsertNode : Inserts a new children on the node
+func (node *Node) InsertNode(key int, data string) func() {
+	switch {
+	case key == node.Key:
+		return nil
+	case key < node.Key:
+		if node.Left == nil {
+			node.Left = &Node{
+				Key:  key,
+				Data: data,
+			}
+			return nil
+		}
+		return node.Left.InsertNode(key, data)
+	case key > node.Key:
+		if node.Right == nil {
+			node.Right = &Node{
+				Key:  key,
+				Data: data,
+			}
+			return nil
+		}
+		return node.Right.InsertNode(key, data)
+	}
+	return nil
 }
 
 func printNode(node *Node) {
@@ -42,25 +75,19 @@ func printNode(node *Node) {
 	fmt.Println()
 }
 
-func read() []Node {
-	var input int
-	fmt.Scanf("%d", &input)
-	var nodes = make([]Node, input)
-	for i := 0; i < input; i++ {
-		var key, indexLeft, indexRight int
-		fmt.Scanf("%d %d %d", &key, &indexLeft, &indexRight)
-		nodes[i].Key = key
-		if indexLeft >= 0 {
-			nodes[i].Left = &nodes[indexLeft]
-		}
-		if indexRight >= 0 {
-			nodes[i].Right = &nodes[indexRight]
-		}
+func display(tree *Tree) {
+	if tree.Root != nil {
+		fmt.Println("Root Key: ", tree.Root.Key)
+		fmt.Println("Title Tree: ", tree.Root.Data)
 	}
-	return nodes
 }
 
 func main() {
 	tree := new(Tree)
-	fmt.Println(tree.Root == nil)
+	arr := [6]int{1, 2, 3, 4, 5, 6}
+	arrD := [6]string{"Pedro", "Juan", "Diego", "Nutella", "Rain", "Names"}
+	for i := 0; i < len(arr); i++ {
+		tree.InsertRoot(arr[i], arrD[i])
+	}
+	display(tree)
 }
