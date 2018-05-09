@@ -72,6 +72,7 @@ func Find(node *Node, key int) func() {
 	return Find(node.Left, key)
 }
 
+// Remove : Removes item from Tree
 func Remove(node *Node, key int) *Node {
 	if node == nil {
 		return nil
